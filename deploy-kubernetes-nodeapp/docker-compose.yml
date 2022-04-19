@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+    #frontend services
+    database:
+        build: ./my-mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        network_mode: host
+        restart: always
+        volumes:
+            - db-volume:/db/node_volumes
+    frontend: 
+        build: ./frontend
+        network_mode: host
+        restart: on-failure
+    backend:
+        build: ./backend
+        environment:
+            MYSQL_DATABASE: employees_db
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+        network_mode: host
+        depends_on:
+            - database
+        volumes:
+            - be-volume:/be/node_volumes
+        restart: on-failure
+        
+
+    
+#network set
+volumes:
+    db-volume:
+    be-volume:

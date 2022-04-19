@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: my-app1
+    app.kubernetes.io/name: mysql
+  name: mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+      tier: mysql
+  template:
+    metadata:
+      labels:
+        app: my-app
+        tier: mysql
+    spec:
+      containers:
+        - image: khanzuber911/my-mysql
+          name: mysql-db
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3306
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: root
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: mysql
+  name: mysqldb
+spec:
+  selector:
+    app: my-app
+    tier: mysql
+  ports:
+   -  protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: ClusterIP
